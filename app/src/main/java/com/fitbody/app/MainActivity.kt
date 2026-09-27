@@ -36,6 +36,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.fitbody.app.feature.camera.FoodCameraScreen
+import com.fitbody.app.ui.MainViewModel
 import com.fitbody.app.ui.screens.DietScreen
 import com.fitbody.app.ui.screens.HomeScreen
 import com.fitbody.app.ui.screens.ProfileScreen
