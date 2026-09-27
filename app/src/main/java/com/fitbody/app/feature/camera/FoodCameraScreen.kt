@@ -22,7 +22,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.platform.LocalLifecycleOwner
+import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
@@ -101,7 +101,7 @@ fun FoodCameraScreen(onBack: () -> Unit) {
                         }
                     )
                 }
-            ) { Text(if (busy) "识别中…" else "拍照识别") }
+            ) { Text(if (busy) "拍照识别") else "拍照识别") }
 
             Spacer(Modifier.height(8.dp))
             if (results.isEmpty() && !busy) {
