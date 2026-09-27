@@ -1,0 +1,6 @@
+<resources>
+    <string name="app_name">体重训练管家</string>
+    <string name="channel_name">体脂秤连接状态</string>
+    <string name="notif_waiting">正在等待体脂秤，请赤脚站上…</string>
+    <string name="notif_recorded">已记录体重：%1$s</string>
+</resources>

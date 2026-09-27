@@ -34,7 +34,7 @@ fun FitBodyTheme(
     content: @Composable () -> Unit
 ) {
     MaterialTheme(
-        colorScheme = if (darkTheme) DarkColors else DarkColors,
+        colorScheme = if (darkTheme) DarkColors else LightColors,
         content = content
     )
 }
