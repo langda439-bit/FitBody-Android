@@ -43,6 +43,9 @@ class ScaleBleManager(private val context: Context) {
     private var retryCount = 0
     private var manualStopped = false
 
+    // 退避重连延迟（普通实例属性，不能作为 companion const）
+    private val backoffMs = longArrayOf(1000, 2000, 4000, 8000)
+
     private val _state = MutableStateFlow(ScaleConnectionState.IDLE)
     val state: StateFlow<ScaleConnectionState> = _state.asStateFlow()
 
@@ -230,7 +233,7 @@ class ScaleBleManager(private val context: Context) {
 
     private fun scheduleRetry() {
         mainHandler.removeCallbacks(retryRunnable)
-        val delayMs = BACKOFF_MS.getOrElse(retryCount) { BACKOFF_MS.last() }
+        val delayMs = backoffMs.getOrElse(retryCount) { backoffMs.last() }
         retryCount++
         Log.i(TAG, "retry in ${delayMs}ms (count=$retryCount)")
         mainHandler.postDelayed(retryRunnable, delayMs)
@@ -242,6 +245,5 @@ class ScaleBleManager(private val context: Context) {
 
     companion object {
         private const val TAG = "ScaleBleManager"
-        private const val BACKOFF_MS = longArrayOf(1000, 2000, 4000, 8000)
     }
 }
