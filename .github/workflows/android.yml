@@ -7,6 +7,9 @@ on:
     branches: [ main ]
   workflow_dispatch:
 
+permissions:
+  contents: read
+
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -34,9 +37,22 @@ jobs:
           gradle-version: '8.11.1'
 
       - name: Build debug APK
-        run: gradle assembleDebug --no-daemon --stacktrace
+        run: |
+          set +e
+          gradle assembleDebug --no-daemon --stacktrace > build_log.txt 2>&1
+          code=$?
+          echo "Gradle exit code: $code"
+          # 将关键错误行以 error 注解输出，匿名可通过 check-runs API 读取
+          grep -E "^e: |FAILED|FAILURE:|What went wrong|Caused by:|error:|Unresolved" build_log.txt | head -80 | while IFS= read -r line; do
+            clean=$(printf '%s' "$line" | tr '\r\n' '  ' | cut -c1-900)
+            printf '::error::%s\n' "$clean"
+          done
+          # 额外输出错误上下文尾部，便于在注解之外排查
+          tail -n 40 build_log.txt
+          exit $code
 
       - name: Upload debug APK
+        if: success()
         uses: actions/upload-artifact@v4
         with:
           name: app-debug-apk
