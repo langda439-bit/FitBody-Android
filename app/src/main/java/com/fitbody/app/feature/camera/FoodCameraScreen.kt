@@ -101,7 +101,9 @@ fun FoodCameraScreen(onBack: () -> Unit) {
                         }
                     )
                 }
-            ) { Text(if (busy) "拍照识别") else "拍照识别") }
+            ) {
+                Text(if (busy) "识别中…" else "拍照识别")
+            }
 
             Spacer(Modifier.height(8.dp))
             if (results.isEmpty() && !busy) {
