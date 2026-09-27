@@ -8,7 +8,7 @@ on:
   workflow_dispatch:
 
 permissions:
-  contents: read
+  contents: write
 
 jobs:
   build:
@@ -47,14 +47,29 @@ jobs:
             clean=$(printf '%s' "$line" | tr '\r\n' '  ' | cut -c1-900)
             printf '::error::%s\n' "$clean"
           done
-          # 额外输出错误上下文尾部，便于在注解之外排查
           tail -n 40 build_log.txt
           exit $code
 
-      - name: Upload debug APK
+      - name: Upload debug APK (artifact)
         if: success()
         uses: actions/upload-artifact@v4
         with:
           name: app-debug-apk
           path: app/build/outputs/apk/debug/app-debug.apk
           if-no-files-found: error
+
+      - name: Publish APK to GitHub Release
+        if: success()
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          APK=app/build/outputs/apk/debug/app-debug.apk
+          cp "$APK" FitBody-debug.apk
+          if gh release view latest >/dev/null 2>&1; then
+            gh release upload latest FitBody-debug.apk --clobber
+          else
+            gh release create latest FitBody-debug.apk \
+              --title "最新构建（可直接安装）" \
+              --notes "自动构建的 Debug APK。下载 FitBody-debug.apk 后传到手机安装即可。" \
+              --prerelease
+          fi
